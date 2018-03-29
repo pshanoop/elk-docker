@@ -5,8 +5,16 @@
 
 # Run with:
 # docker-compose up
+web:
+  build: ./nginx-filebeat
+  ports:
+    - "80:80"
+  links:
+    - elk
 
 elk:
+  environment:
+    - CLUSTER_NAME=olakk_es
   build: .
   ports:
     - "5601:5601"
