@@ -15,6 +15,7 @@ web:
 elk:
   environment:
     - CLUSTER_NAME=olakk_es
+    - LOGSTASH_START=0
   build: .
   ports:
     - "5601:5601"
