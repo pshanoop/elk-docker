@@ -62,8 +62,7 @@ RUN mkdir ${ES_HOME} \
 
 COPY ./elasticsearch-init /etc/init.d/elasticsearch
 
-RUN sed -i -e 's#^ES_HOME=$#ES_HOME='$ES_HOME'#' /etc/init.d/elasticsearch 
-RUN sed -i -e 's#^CLUSTER_NAME=$#CLUSTER_NAME='$CLUSTER_NAME'#' /etc/init.d/elasticsearch \
+RUN sed -i -e 's#^ES_HOME=$#ES_HOME='$ES_HOME'#' /etc/init.d/elasticsearch \ 
  && chmod +x /etc/init.d/elasticsearch
 
 

@@ -40,7 +40,7 @@ ES_GROUP=elasticsearch
 ES_HOME=
 
 # Cluster name 
-CLUSTER_NAME=
+#CLUSTER_NAME=
 
 # Additional Java OPTS
 #ES_JAVA_OPTS=

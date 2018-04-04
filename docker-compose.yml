@@ -14,7 +14,7 @@
 
 elk:
   environment:
-    - CLUSTER_NAME=olakk_es
+    - CLUSTER_NAME=thenga
     - LOGSTASH_START=0
   build: .
   ports:

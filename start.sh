@@ -23,6 +23,17 @@ _term() {
 
 trap _term SIGTERM
 
+## check system config
+pre_checks() {
+  mmc=$(sysctl vm.max_map_count|sed 's/.*= //')
+  if [[ $mmc -lt 262144 ]]; then
+    echo "
+ERROR: As of 5.0.0 Elasticsearch requires increasing mmap counts.
+Refer to https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+"
+    exit 1
+  fi
+}
 
 ## remove pidfiles in case previous graceful termination failed
 # NOTE - This is the reason for the WARNING at the top - it's a bit hackish,
@@ -41,6 +52,9 @@ if [ -x /usr/local/bin/elk-pre-hooks.sh ]; then
   . /usr/local/bin/elk-pre-hooks.sh
 fi
 
+## Check for vm.max_map_count
+
+pre_checks
 
 ## start services as needed
 
@@ -88,6 +102,13 @@ else
         && chmod +x /etc/init.d/elasticsearch
   fi
 
+  # override CLUSTER_NAME variable if set
+  if [ ! -z "$CLUSTER_NAME" ]; then
+    awk -v LINE="CLUSTER_NAME=$CLUSTER_NAME" '{ sub(/^#?CLUSTER_NAME=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
   service elasticsearch start
 
   # wait for Elasticsearch to start up before either starting Kibana (if enabled)
@@ -97,7 +118,7 @@ else
   # set number of retries (default: 30, override using ES_CONNECT_RETRY env var)
   re_is_numeric='^[0-9]+$'
   if ! [[ $ES_CONNECT_RETRY =~ $re_is_numeric ]] ; then
-     ES_CONNECT_RETRY=60
+     ES_CONNECT_RETRY=30
   fi
 
   if [ -z "$ELASTICSEARCH_URL" ]; then
@@ -113,6 +134,10 @@ else
   if [ ! "$(curl -k ${ELASTICSEARCH_URL} 2> /dev/null)" ]; then
     echo "Couln't start Elasticsearch. Exiting."
     echo "Elasticsearch log follows below."
+    if [ ! -z "$CLUSTER_NAME" ]; then
+        cat /var/log/elasticsearch/$CLUSTER_NAME.log
+        exit 1
+    fi
     cat /var/log/elasticsearch/elasticsearch.log
     exit 1
   fi
