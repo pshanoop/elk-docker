@@ -39,6 +39,9 @@ ES_GROUP=elasticsearch
 # Directory where the Elasticsearch binary distribution resides
 ES_HOME=
 
+# Cluster name 
+CLUSTER_NAME=
+
 # Additional Java OPTS
 #ES_JAVA_OPTS=
 
@@ -74,7 +77,7 @@ fi
 PID_FILE="$PID_DIR/$NAME.pid"
 DAEMON=$ES_HOME/bin/elasticsearch
 DAEMON_OPTS="-d -p $PID_FILE -Epath.logs=$LOG_DIR -Epath.data=$DATA_DIR"
-DAEMON_ENV_VARS="ES_PATH_CONF=$ES_PATH_CONF"
+DAEMON_ENV_VARS="ES_PATH_CONF=$ES_PATH_CONF CLUSTER_NAME=$CLUSTER_NAME"
 
 export ES_JAVA_OPTS
 export JAVA_HOME

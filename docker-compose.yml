@@ -5,12 +5,12 @@
 
 # Run with:
 # docker-compose up
-web:
-  build: ./nginx-filebeat
-  ports:
-    - "80:80"
-  links:
-    - elk
+#web:
+#  build: ./nginx-filebeat
+#  ports:
+#    - "80:80"
+#  links:
+#    - elk
 
 elk:
   environment:
