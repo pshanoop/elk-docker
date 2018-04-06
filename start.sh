@@ -159,6 +159,11 @@ else
   OUTPUT_LOGFILES+="/var/log/elasticsearch/${CLUSTER_NAME}.log "
 fi
 
+### Install plugins 
+${ES_HOME}/bin/elasticsearch-plugin install analysis-icu    
+${ES_HOME}/bin/elasticsearch-plugin install analysis-stempel
+${ES_HOME}/bin/elasticsearch-plugin install discovery-ec2
+${ES_HOME}/bin/elasticsearch-plugin install repository-s3
 
 ### Logstash
 
