@@ -109,6 +109,13 @@ else
         && chmod +x /etc/init.d/elasticsearch
   fi
 
+  ### Install plugins 
+  ${ES_HOME}/bin/elasticsearch-plugin install analysis-icu    
+  ${ES_HOME}/bin/elasticsearch-plugin install analysis-stempel
+  ${ES_HOME}/bin/elasticsearch-plugin install discovery-ec2
+  ${ES_HOME}/bin/elasticsearch-plugin install repository-s3
+
+
   service elasticsearch start
 
   # wait for Elasticsearch to start up before either starting Kibana (if enabled)
@@ -158,13 +165,6 @@ else
   fi
   OUTPUT_LOGFILES+="/var/log/elasticsearch/${CLUSTER_NAME}.log "
 fi
-
-### Install plugins 
-${ES_HOME}/bin/elasticsearch-plugin install analysis-icu    
-${ES_HOME}/bin/elasticsearch-plugin install analysis-stempel
-${ES_HOME}/bin/elasticsearch-plugin install discovery-ec2
-${ES_HOME}/bin/elasticsearch-plugin install repository-s3
-
 ### Logstash
 
 if [ -z "$LOGSTASH_START" ]; then
