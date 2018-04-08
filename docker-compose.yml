@@ -11,7 +11,7 @@
 #    - "80:80"
 #  links:
 #    - elk
-
+#
 elk:
   environment:
     - CLUSTER_NAME=thenga
@@ -26,3 +26,5 @@ fluentd:
   build: ./fluentd
   ports:
     - "24284:24284"
+#  links:
+#    - elk
