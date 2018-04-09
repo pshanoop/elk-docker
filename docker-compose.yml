@@ -1,30 +1,34 @@
 # Docker Compose file for ELK stack
 
-# Build with:
-# docker-compose build elk
+version: '3'
 
-# Run with:
-# docker-compose up
-#web:
-#  build: ./nginx-filebeat
-#  ports:
-#    - "80:80"
-#  links:
-#    - elk
-#
-elk:
-  environment:
-    - CLUSTER_NAME=thenga
-    - LOGSTASH_START=0
-  build: .
-  ports:
-    - "5601:5601"
-    - "9200:9200"
-    - "5044:5044"
+services:
 
-fluentd:
-  build: ./fluentd
-  ports:
-    - "24284:24284"
-#  links:
-#    - elk
+    #web:
+    #  build: ./nginx-filebeat
+    #  ports:
+    #    - "80:80"
+    #  links:
+    #    - elk
+    #
+    elk:
+      environment:
+        - CLUSTER_NAME=thenga
+        - LOGSTASH_START=0
+      build: .
+      ports:
+        - "5601:5601"
+        - "9200:9200"
+        - "5044:5044"
+
+    fluentd:
+      build: ./fluentd
+      environment:
+        - FLUENTD_OPT=-v
+      ports:
+        - "24284:24284"
+        - "24224:24224"
+    # links:
+    #    - elk
+      depends_on:
+        - elk

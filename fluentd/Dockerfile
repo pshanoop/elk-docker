@@ -1,15 +1,17 @@
-FROM fluent/fluentd:v1.0
+FROM fluent/fluentd:v1.1.3-debian-onbuild
 MAINTAINER Sanoob <...@...>
 
-RUN apk add --update --virtual .build-deps \
-        sudo build-base ruby-dev \
- && sudo gem install \
+RUN apt-get install -y --no-install-recommends $buildDeps \
+ && gem install \
         fluent-plugin-secure-forward \
- && sudo gem install \
+ && gem install \
         fluent-plugin-elasticsearch \
- && sudo gem sources --clear-all \
- && apk del .build-deps \
- && rm -rf /var/cache/apk/* \
-           /home/fluent/.gem/ruby/2.3.0/cache/*.gem
+ && gem sources --clear-all \
+ && apt-get purge -y --auto-remove \
+                -o APT::AutoRemove::RecommendsImportant=false \
+                 $buildDeps \
+ && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
 EXPOSE 24284
+EXPOSE 24224
