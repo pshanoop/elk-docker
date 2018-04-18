@@ -54,6 +54,7 @@ cluster.name:  ${CLUSTER_NAME}
 #
 #network.host: 192.168.0.1
 network.host: 0.0.0.0
+
 #
 # Set a custom port for HTTP:
 #
@@ -66,14 +67,25 @@ network.host: 0.0.0.0
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-#discovery.zen.ping.unicast.hosts: ["host1", "host2"]
+#discovery.zen.ping.unicast.hosts: [ _ec2:privateIpv4_, "[::1]"]
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
 #
 #discovery.zen.minimum_master_nodes: 3
 #
-# For more information, consult the zen discovery module documentation.
 #
+cloud.aws:
+  access_key: ${AWS_KEY_ID}
+  secret_key: ${AWS_KEY}
+  region: ${AWS_REGION}
+
+discovery.ec2:
+    host_type: private_dns
+    tag.Name: logwatch_ecs
+
+discovery.zen.hosts_provider: ec2
+
+
 # ---------------------------------- Gateway -----------------------------------
 #
 # Block initial recovery after a full cluster restart until N nodes are started:

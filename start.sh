@@ -109,6 +109,37 @@ else
         && chmod +x /etc/init.d/elasticsearch
   fi
 
+
+  # override CLUSTER_NAME variable if set
+  if [ ! -z "$CLUSTER_NAME" ]; then
+    awk -v LINE="CLUSTER_NAME=$CLUSTER_NAME" '{ sub(/^#?CLUSTER_NAME=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
+
+  # override AWS_KEY_ID variable if set
+  if [ ! -z "$AWS_KEY_ID" ]; then
+    awk -v LINE="=$AWS_KEY_ID" '{ sub(/^#?AWS_KEY_ID=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
+
+  # override AWS_KEY variable if set
+  if [ ! -z "$AWS_KEY" ]; then
+    awk -v LINE="AWS_KEY=$AWS_KEY" '{ sub(/^#?AWS_KEY=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
+  # override AWS_REGION variable if set
+  if [ ! -z "$AWS_REGION" ]; then
+    awk -v LINE="AWS_REGION=$AWS_REGION" '{ sub(/^#?AWS_REGION=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
   ### Install plugins 
   ${ES_HOME}/bin/elasticsearch-plugin install analysis-icu    
   ${ES_HOME}/bin/elasticsearch-plugin install analysis-stempel
