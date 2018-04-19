@@ -53,8 +53,7 @@ cluster.name:  ${CLUSTER_NAME}
 # Set the bind address to a specific IP (IPv4 or IPv6):
 #
 #network.host: 192.168.0.1
-network.host: 0.0.0.0
-
+network.host: _ec2:privateIpv4_
 #
 # Set a custom port for HTTP:
 #
@@ -80,8 +79,9 @@ cloud.aws:
   region: ${AWS_REGION}
 
 discovery.ec2:
-    host_type: private_dns
+    host_type: private_ip
     tag.Name: logwatch_ecs
+    endpoint: ec2.eu-west-1.amazonaws.com
 
 discovery.zen.hosts_provider: ec2
 
