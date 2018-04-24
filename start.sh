@@ -109,11 +109,49 @@ else
         && chmod +x /etc/init.d/elasticsearch
   fi
 
+
+  # override CLUSTER_NAME variable if set
+  if [ ! -z "$CLUSTER_NAME" ]; then
+    awk -v LINE="CLUSTER_NAME=$CLUSTER_NAME" '{ sub(/^#?CLUSTER_NAME=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
+
+  # override AWS_KEY_ID variable if set
+  if [ ! -z "$AWS_KEY_ID" ]; then
+    awk -v LINE="=$AWS_KEY_ID" '{ sub(/^#?AWS_KEY_ID=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
+
+  # override AWS_KEY variable if set
+  if [ ! -z "$AWS_KEY" ]; then
+    awk -v LINE="AWS_KEY=$AWS_KEY" '{ sub(/^#?AWS_KEY=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
+  # override AWS_REGION variable if set
+  if [ ! -z "$AWS_REGION" ]; then
+    awk -v LINE="AWS_REGION=$AWS_REGION" '{ sub(/^#?AWS_REGION=.*/, LINE); print; }' /etc/init.d/elasticsearch \
+        > /etc/init.d/elasticsearch.new && mv /etc/init.d/elasticsearch.new /etc/init.d/elasticsearch \
+        && chmod +x /etc/init.d/elasticsearch
+  fi
+
   ### Install plugins 
   ${ES_HOME}/bin/elasticsearch-plugin install analysis-icu    
   ${ES_HOME}/bin/elasticsearch-plugin install analysis-stempel
   ${ES_HOME}/bin/elasticsearch-plugin install discovery-ec2
   ${ES_HOME}/bin/elasticsearch-plugin install repository-s3
+
+  ### Add aws keys
+  ${ES_HOME}/bin/elasticsearch-keystore create
+  echo ${AWS_KEY_ID} | ${ES_HOME}/bin/elasticsearch-keystore add discovery.ec2.access_key
+  echo ${AWS_KEY} | ${ES_HOME}/bin/elasticsearch-keystore add discovery.ec2.secret_key
+
+  chown elasticsearch:elasticsearch /etc/elasticsearch/elasticsearch.keystore
 
 
   service elasticsearch start
